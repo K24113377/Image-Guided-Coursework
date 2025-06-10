@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QLabel" name="targetLabelMapSelector">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>30</y>
+     <width>121</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Target Label Map: </string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="criticalStructureLabelMapSelector">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>70</y>
+     <width>181</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Critcial Structure Label Map:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="entryPointsSelector">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>110</y>
+     <width>91</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Entry Points:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="targetPointsSelector">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>150</y>
+     <width>91</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Target Points:</string>
+   </property>
+  </widget>
+  <widget class="qMRMLNodeComboBox" name="MRMLNodeComboBox">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>20</y>
+     <width>112</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="nodeTypes">
+    <stringlist notr="true"/>
+   </property>
+   <property name="hideChildNodeTypes">
+    <stringlist notr="true"/>
+   </property>
+   <property name="interactionNodeSingletonTag">
+    <string notr="true"/>
+   </property>
+  </widget>
+  <widget class="qMRMLNodeComboBox" name="MRMLNodeComboBox_2">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>70</y>
+     <width>112</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="nodeTypes">
+    <stringlist notr="true"/>
+   </property>
+   <property name="hideChildNodeTypes">
+    <stringlist notr="true"/>
+   </property>
+   <property name="interactionNodeSingletonTag">
+    <string notr="true"/>
+   </property>
+  </widget>
+  <widget class="qMRMLNodeComboBox" name="MRMLNodeComboBox_3">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>110</y>
+     <width>112</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="nodeTypes">
+    <stringlist notr="true"/>
+   </property>
+   <property name="hideChildNodeTypes">
+    <stringlist notr="true"/>
+   </property>
+   <property name="interactionNodeSingletonTag">
+    <string notr="true"/>
+   </property>
+  </widget>
+  <widget class="qMRMLNodeComboBox" name="MRMLNodeComboBox_4">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>150</y>
+     <width>112</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="nodeTypes">
+    <stringlist notr="true"/>
+   </property>
+   <property name="hideChildNodeTypes">
+    <stringlist notr="true"/>
+   </property>
+   <property name="interactionNodeSingletonTag">
+    <string notr="true"/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lengthThresholdSlider">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>190</y>
+     <width>121</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Length Thresholds:</string>
+   </property>
+  </widget>
+  <widget class="qMRMLSliderWidget" name="MRMLSliderWidget">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>190</y>
+     <width>150</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="quantity">
+    <string notr="true"/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="applyButton">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>250</y>
+     <width>80</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Apply</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="verticalLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>20</y>
+     <width>2</width>
+     <height>2</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout"/>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ctkSliderWidget</class>
+   <extends>QWidget</extends>
+   <header>ctkSliderWidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>qMRMLNodeComboBox</class>
+   <extends>QWidget</extends>
+   <header>qMRMLNodeComboBox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>qMRMLSliderWidget</class>
+   <extends>ctkSliderWidget</extends>
+   <header>qMRMLSliderWidget.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
