@@ -107,6 +107,21 @@ ros2 topic pub /IGTL_TRANSFORM_IN ros2_igtl_bridge/msg/Transform "{
 ```
 If you select a different entry–target pair in the Slicer path planner and obtain a new trajectory, convert the RAS coordinates (in millimetres) from Slicer into ROS2 coordinates (in metres) by dividing each value by 1000 before publishing.
 
+Note on Y-axis constraint:  
+Due to a workspace limitation in the current robot setup, the **Y translation value must be at least `0.2`**. If the path planner returns a Y-coordinate below this (e.g., `0.113`), the transform will not execute correctly in MoveIt2. As a result, even when using valid planned trajectories, you must **manually set the Y value to `0.2`** when publishing the transform.
+
+And here’s the updated command example including the context:
+
+```bash
+ros2 topic pub /IGTL_TRANSFORM_IN ros2_igtl_bridge/msg/Transform "{
+  name: 'best_trajectory',
+  transform: {
+    translation: { x: 0.154, y: 0.2, z: 0.133 },
+    rotation: { x: 0.0, y: 0.0, z: 0.0, w: 1.0 }
+  }
+}"
+```
+
 **Terminal 4 (Optional) – Monitor the topic**
 ```bash
 ros2 topic echo /IGTL_TRANSFORM
