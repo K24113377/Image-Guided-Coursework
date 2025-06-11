@@ -128,6 +128,7 @@ ros2 topic echo /IGTL_TRANSFORM
 ```
 This method bypasses OpenIGTLink and allows you to simulate trajectory delivery manually. The robot will then move to the provided pose using MoveIt2.
 
+If all terminals are configured correctly, the robot should now visibly move to the specified target pose in RViz, confirming successful execution of the planned trajectory.
 
 
 
