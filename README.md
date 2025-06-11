@@ -44,7 +44,7 @@ The ROS2 node subscribes to the `/IGTL_TRANSFORM` topic and parses incoming tran
 1. Open 3D Slicer and load the module.
 2. Import:
    - A label map volume for the target structure
-   - Optional forbidden structures (e.g., ventricles)
+   - Optional critical structures (e.g., ventricles)
    - Entry and target fiducials
 3. Run the path planner to compute and visualise the best trajectory.
 
@@ -64,7 +64,7 @@ The ROS2 node subscribes to the `/IGTL_TRANSFORM` topic and parses incoming tran
 
 ## Dependencies
 
-- 3D Slicer (v5.2+)
+- 3D Slicer (v5.8.1)
 - OpenIGTLinkIF extension
 - ROS2 Jazzy
 - MoveIt2
