@@ -2,6 +2,8 @@
 
 This repository contains the full pipeline for an image-guided robotic navigation system designed for minimally invasive surgical planning and execution. The system integrates medical image analysis, real-time data communication, and robotic motion planning to compute and execute safe linear trajectories from an entry point to a surgical target while avoiding critical anatomical structures.
 
+---
+
 ## Project Overview
 
 The system is divided into three core modules:
@@ -15,76 +17,100 @@ The system is divided into three core modules:
 3. **ROS2 MoveIt2 Robot Control**  
    Receives the trajectory, computes inverse kinematics, and executes motion to the target pose.
 
-## Module Descriptions
+---
 
-### 1. 3D Slicer Path Planning
+## Getting the Full System Working (Step-by-Step Guide)
 
-This module allows users to:
-- Load anatomical volumes and segmentations (e.g., target, ventricles)
-- Define entry and target fiducials
-- Compute all valid entry–target straight-line trajectories
-- Reject paths intersecting critical structures using voxel-based label maps
-- Score valid paths using Euclidean distance maps
-- Select and visualise the safest, highest-scoring trajectory
-
-### 2. OpenIGTLink Communication
-
-After computing the trajectory, a `vtkMRMLLinearTransformNode` is created to encode the pose as a 4×4 matrix. This is transmitted from Slicer to ROS2 via a `vtkMRMLIGTLConnectorNode` in server mode, using port 18944. The OpenIGTLinkIF module pushes the transform continuously. On the ROS2 side, the `ros2_igtl_bridge` package receives the transform and republishes it as a ROS2 message on `/IGTL_TRANSFORM`.
-
-### 3. ROS2 MoveIt2 Integration
-
-The ROS2 node subscribes to the `/IGTL_TRANSFORM` topic and parses incoming transform data. Using MoveIt2, it:
-- Converts the transform into a pose relative to the robot base
-- Performs inverse kinematics
-- Plans and executes motion to the target using a 6-DOF robotic arm
-
-## Usage Instructions
-
-### Slicer Path Planning
-1. Open 3D Slicer and load the module.
-2. Import:
-   - A label map volume for the target structure
-   - Optional critical structures (e.g., ventricles)
-   - Entry and target fiducials
-3. Run the path planner to compute and visualise the best trajectory.
-
-### OpenIGTLink Setup
-1. In Slicer:
-   - Add a `vtkMRMLIGTLConnectorNode`
-   - Link it to the trajectory transform node
-   - Set port to 18944 and enable push on connect
-2. In ROS2:
-   - Launch the `ros2_igtl_bridge`
-   - Echo the topic `/IGTL_TRANSFORM` to verify reception
-
-### ROS2 MoveIt2 Execution
-1. Build the ROS2 workspace with `colcon build`
-2. Source the workspace and run the robot subscriber node
-3. Verify planned execution in RViz or on a physical robot (if connected)
-
-## Known Issue and Workaround
-
-While an OpenIGTLink connection was successfully established between 3D Slicer and ROS2 (with the connector status showing as "Connected"), the transform messages were not received by ROS2 as expected. As a workaround, the final pose was manually published using the `ros2 topic pub` command on the `/IGTL_TRANSFORM_IN` topic. This simulated the transform that would have been sent by Slicer, allowing successful trajectory execution via MoveIt2. Future debugging may focus on message formatting or OpenIGTLink bridge compatibility.
+> This section includes both the ideal OpenIGTLink connection workflow and a workaround using manual transform publishing.
 
 ---
 
+## Ideal Workflow with Working OpenIGTLink Connection
 
-## Dependencies
+If the OpenIGTLink communication between 3D Slicer and ROS2 functions correctly, follow these steps:
 
-- 3D Slicer (v5.8.1)
-- OpenIGTLinkIF extension
-- ROS2 Jazzy
-- MoveIt2
-- Python 3.9 (via Slicer and ROS environments)
+### In 3D Slicer:
+1. Load the `FinaPathPlanner` module via Extension Wizard.
+2. Load anatomical data and convert all volumes to label maps except `fakeBrain`.
+3. Place entry and target fiducials.
+4. Run the planner to generate the best trajectory.
+5. A `vtkMRMLLinearTransformNode` will be created with the pose.
+6. Open the **OpenIGTLinkIF** module:
+   - Add a connector node in **Server mode** (port `18944`)
+   - Click **Start**
+   - Add the transform node as an **Outgoing** node and enable **Push on Connect**
 
-## Author
+### In ROS2:
+Open three terminals.
 
-Safa Khan  
-MSc Healthcare Technologies  
-King’s College London
+**Terminal 1 – Start OpenIGTLink Bridge:**
+```bash
+source install/setup.bash
+ros2 run ros2_igtl_bridge igtl_bridge_node
+```
 
-## License
 
-This project is licensed under the MIT License.
+**Terminal 2 – Launch the robot planner:**
+
+```bash
+source install/setup.bash
+ros2 launch my_robot_goal robot_plan.launch.py
+```
+
+**Terminal 3 – Run the subscriber node:**
+
+```bash
+source install/setup.bash
+ros2 run my_pose_goal member_subscriber
+```
+
+Once the transform is pushed from Slicer, it will be received and executed by the robot via MoveIt2.
+
+## 🛠 Workaround (Manual Transform Publishing)
+
+If 3D Slicer fails to stream the transform via OpenIGTLink (due to connection or compatibility issues), you can manually publish the planned pose to ROS2 using the following steps:
+
+### In 3D Slicer
+
+1. Use the `FinaPathPlanner` module to compute the best trajectory.
+2. Note the target coordinates (e.g., `[154.0, 74.0, 133.0]`).
+3. Convert the coordinates from millimetres to metres by dividing by 1000:
+   - Result: `[0.154, 0.074, 0.133]`
+
+### In ROS2
+
+Use four terminals:
+
+**Terminal 1 – Launch the robot executor**
+```bash
+source install/setup.bash
+ros2 launch my_robot_goal robot_plan.launch.py
+```
+
+**Terminal 2 – Run the subscriber**
+```bash
+source install/setup.bash
+ros2 run my_pose_goal member_subscriber
+```
+
+**Terminal 3 – Manually publish the transform**
+This transform corresponds to the best trajectory selected in 3D Slicer when the hippocampus was set as the target and vessels as the critical structure, with the maximum trajectory length set to 100 mm.
+
+```bash
+ros2 topic pub /IGTL_TRANSFORM_IN ros2_igtl_bridge/msg/Transform "{
+  name: 'best_trajectory',
+  transform: {
+    translation: { x: 0.154, y: 0.074, z: 0.133 },
+    rotation: { x: 0.0, y: 0.0, z: 0.0, w: 1.0 }
+  }
+}"
+```
+**Terminal 4 (Optional) – Monitor the topic**
+```bash
+ros2 topic echo /IGTL_TRANSFORM
+```
+This method bypasses OpenIGTLink and allows you to simulate trajectory delivery manually. The robot will then move to the provided pose using MoveIt2.
+
+
 
 
