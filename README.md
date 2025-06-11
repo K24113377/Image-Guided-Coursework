@@ -62,6 +62,13 @@ The ROS2 node subscribes to the `/IGTL_TRANSFORM` topic and parses incoming tran
 2. Source the workspace and run the robot subscriber node
 3. Verify planned execution in RViz or on a physical robot (if connected)
 
+## Known Issue and Workaround
+
+While an OpenIGTLink connection was successfully established between 3D Slicer and ROS2 (with the connector status showing as "Connected"), the transform messages were not received by ROS2 as expected. As a workaround, the final pose was manually published using the `ros2 topic pub` command on the `/IGTL_TRANSFORM_IN` topic. This simulated the transform that would have been sent by Slicer, allowing successful trajectory execution via MoveIt2. Future debugging may focus on message formatting or OpenIGTLink bridge compatibility.
+
+---
+
+
 ## Dependencies
 
 - 3D Slicer (v5.8.1)
