@@ -66,7 +66,7 @@ ros2 run my_pose_goal member_subscriber
 
 Once the transform is pushed from Slicer, it will be received and executed by the robot via MoveIt2.
 
-## 🛠 Workaround (Manual Transform Publishing)
+## Workaround (Manual Transform Publishing)
 
 If 3D Slicer fails to stream the transform via OpenIGTLink (due to connection or compatibility issues), you can manually publish the planned pose to ROS2 using the following steps:
 
