@@ -105,6 +105,8 @@ ros2 topic pub /IGTL_TRANSFORM_IN ros2_igtl_bridge/msg/Transform "{
   }
 }"
 ```
+If you select a different entry–target pair in the Slicer path planner and obtain a new trajectory, convert the RAS coordinates (in millimetres) from Slicer into ROS2 coordinates (in metres) by dividing each value by 1000 before publishing.
+
 **Terminal 4 (Optional) – Monitor the topic**
 ```bash
 ros2 topic echo /IGTL_TRANSFORM
